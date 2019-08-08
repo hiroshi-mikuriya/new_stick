@@ -48,6 +48,7 @@ void setup() {
 }
 
 void loop() {
+  pixels.clear();
   int d;
   readItems(REG_ACCEL_YOUT_H, &d, 1);
   int line = (d / 0x100 + 0x80) * IMG_WIDTH / 0x100;
@@ -55,7 +56,7 @@ void loop() {
   if (line < 0 || IMG_HEIGHT <= line) return;
   for (int i = 0; i < IMG_HEIGHT; ++i) {
     const uint8_t* bgr = image[line] + i * 3;
-    pixels.setPixelColor(i, pixels.Color(bgr[2], bgr[1], bgr[0]));
+    pixels.setPixelColor(i, bgr[2], bgr[1], bgr[0]);
   }
   pixels.show();
 }
