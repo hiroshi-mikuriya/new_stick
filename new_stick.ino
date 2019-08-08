@@ -44,20 +44,19 @@ void setup() {
   SPI.setDataMode(SPI_MODE0);
   pinMode(CS, OUTPUT);
   pixels.begin();
-  pixels.setBrightness(30);
+  pixels.setBrightness(50);
 }
 
 void loop() {
   int d;
   readItems(REG_ACCEL_YOUT_H, &d, 1);
-  // Serial.println(d);
-  int line = (d + 0x8000) * IMG_WIDTH / 0x10000;
-  const uint8_t* p = image[line];
+  int line = (d / 0x100 + 0x80) * IMG_WIDTH / 0x100;
+  Serial.println(line);
   for (int i = 0; i < IMG_HEIGHT; ++i) {
-    pixels.setPixelColor(i, pixels.Color(p[i * 3], p[i * 3 + 1], p[i * 3 + 2]));
+    const uint8_t* bgr = image[line] + i * 3;
+    pixels.setPixelColor(i, pixels.Color(bgr[2], bgr[1], bgr[0]));
   }
   pixels.show();
-  delay(10);
 }
 
 void readItems(uint8_t regAddr, int* d, int n) {
@@ -71,4 +70,3 @@ void readItems(uint8_t regAddr, int* d, int n) {
   }
   digitalWrite(CS, HIGH);
 }
-
