@@ -6,12 +6,14 @@ if img is None:
   print("failed to read image")
   exit(1)
 
-print(img.shape)
+print("#include <avr/pgmspace.h>")
+print("#define IMG_WIDTH", img.shape[1])
+print("#define IMG_HEIGHT", img.shape[0])
+print("const uint8_t image[IMG_WIDTH][IMG_HEIGHT * 3] PROGMEM = {")
 for x in range(0, img.shape[1]):
   print("{ ", end = "")
   for y in range(0, img.shape[0]):
     c = img[y][x]
-    print(c[0], end = ", ")
-    print(c[1], end = ", ")
-    print(c[2], end = ", ")
+    print(c[0], c[1], c[2], sep=", ", end=", ")
   print("},")
+print("};")
