@@ -55,7 +55,7 @@ void loop() {
   Serial.println(line);
   if (line < 0 || IMG_HEIGHT <= line) return;
   for (int i = 0; i < IMG_HEIGHT; ++i) {
-    const uint8_t* bgr = image[line] + i * 3;
+    const uint8_t* bgr = &image[(line * IMG_HEIGHT + i) * 3];
     pixels.setPixelColor(i, bgr[2], bgr[1], bgr[0]);
   }
   pixels.show();
