@@ -44,7 +44,7 @@ void setup() {
   SPI.setDataMode(SPI_MODE0);
   pinMode(CS, OUTPUT);
   pixels.begin();
-  pixels.setBrightness(50);
+  pixels.setBrightness(10);
 }
 
 void loop() {
