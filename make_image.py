@@ -12,7 +12,7 @@ print("#define IMG_WIDTH", img.shape[1])
 print("#define IMG_HEIGHT", img.shape[0])
 print("const uint8_t image[IMG_WIDTH * IMG_HEIGHT * 3] PROGMEM = {")
 for x in range(0, img.shape[1]):
-  print('  ', end = '')
+  print('  /* %2d */' % x, end = ' ')
   for y in range(0, img.shape[0]):
     c = img[y][x]
     print('0x%02X, 0x%02X, 0x%02X, ' % (c[0], c[1], c[2]), end = ' ')
