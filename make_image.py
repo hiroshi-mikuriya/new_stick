@@ -10,11 +10,13 @@ img = cv2.resize(img, (50, 43))
 print("#include <avr/pgmspace.h>")
 print("#define IMG_WIDTH", img.shape[1])
 print("#define IMG_HEIGHT", img.shape[0])
-print("const uint8_t image[IMG_WIDTH * IMG_HEIGHT * 3] PROGMEM = {")
+print("const unsigned int image[IMG_WIDTH * IMG_HEIGHT] PROGMEM = {")
 for x in range(0, img.shape[1]):
   print('  /* %2d */' % x, end = ' ')
   for y in range(0, img.shape[0]):
     c = img[y][x]
-    print('0x%02X, 0x%02X, 0x%02X, ' % (c[0], c[1], c[2]), end = ' ')
+    c0 = (c[2] & 0xF8) + ((c[1] & 0xE0) >> 5)
+    c1 = ((c[1] & 0x1E) << 3) + ((c[0] & 0xF8) >> 3)
+    print('0x%02X%02X, ' % (c0, c1), end = ' ')
   print()
 print("};")

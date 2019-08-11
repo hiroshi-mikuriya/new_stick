@@ -55,10 +55,10 @@ void loop() {
   Serial.println(line);
   if (line < 0 || IMG_HEIGHT <= line) return;
   for (int i = 0; i < IMG_HEIGHT; ++i) {
-    int index = (line * IMG_HEIGHT + i) * 3;
-    uint8_t r = pgm_read_word(image + index + 2);
-    uint8_t g = pgm_read_word(image + index + 1);
-    uint8_t b = pgm_read_word(image + index + 0);
+    unsigned int c = pgm_read_word(image + line * IMG_HEIGHT + i);
+    uint8_t r = (c & 0xF800) >> 8;
+    uint8_t g = (c & 0x07E0) >> 3;
+    uint8_t b = (c & 0x001F) << 3;
     pixels.setPixelColor(i, r, g, b);
   }
   pixels.show();
