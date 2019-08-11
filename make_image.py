@@ -16,7 +16,7 @@ for x in range(0, img.shape[1]):
   for y in range(0, img.shape[0]):
     c = img[y][x]
     c0 = (c[2] & 0xF8) + ((c[1] & 0xE0) >> 5)
-    c1 = ((c[1] & 0x1E) << 3) + ((c[0] & 0xF8) >> 3)
+    c1 = ((c[1] & 0x1C) << 3) + ((c[0] & 0xF8) >> 3)
     print('0x%02X%02X, ' % (c0, c1), end = ' ')
   print()
 print("};")
