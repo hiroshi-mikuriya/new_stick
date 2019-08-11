@@ -6,7 +6,7 @@ if img is None:
   print("failed to read image")
   exit(1)
 
-img = cv2.resize(img, (50, 43))
+img = cv2.resize(img, (48, 42))
 print("#include <avr/pgmspace.h>")
 print("#define IMG_WIDTH", img.shape[1])
 print("#define IMG_HEIGHT", img.shape[0])
