@@ -48,11 +48,10 @@ void setup() {
 }
 
 void loop() {
-  pixels.clear();
   int d;
-  readItems(REG_ACCEL_YOUT_H, &d, 1);
+  readItems(REG_ACCEL_XOUT_H, &d, 1);
   int line = (d / 0x100 + 0x80) * IMG_WIDTH / 0x100;
-  Serial.println(line);
+  // Serial.println(line);
   if (line < 0 || IMG_HEIGHT <= line) return;
   for (int i = 0; i < IMG_HEIGHT; ++i) {
     unsigned int c = pgm_read_word(image + line * IMG_HEIGHT + i);
@@ -65,12 +64,11 @@ void loop() {
 }
 
 void readItems(uint8_t regAddr, int* d, int n) {
-  uint8_t d0, d1;
   digitalWrite(CS, LOW);
   SPI.transfer(regAddr | 0x80);
   for (int i = 0; i < n; ++i) {
-    d0 = SPI.transfer(0x00);
-    d1 = SPI.transfer(0x00);
+    uint8_t d0 = SPI.transfer(0x00);
+    uint8_t d1 = SPI.transfer(0x00);
     d[i] = (int)((d0 << 8) + (d1 & 0xFF));
   }
   digitalWrite(CS, HIGH);
