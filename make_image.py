@@ -25,7 +25,7 @@ for i in range(1, len(sys.argv)):
             a1 = img[y + 1][x]
             c0 = (a0[2] & 0xF0) + ((a0[1] & 0xF0) >> 4)
             c1 = (a0[0] & 0xF0) + ((a1[2] & 0xF0) >> 4)
-            c2 = (a1[1] & 0xF0) + ((a1[1] & 0xF0) >> 4)
+            c2 = (a1[1] & 0xF0) + ((a1[0] & 0xF0) >> 4)
             print('0x%02X,0x%02X,0x%02X,' % (c0, c1, c2), end='  ')
         print()
     print('};')

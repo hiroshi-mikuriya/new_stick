@@ -54,7 +54,7 @@ void setup() {
 }
 
 void loop() {
-  const uint8_t* image = update_nimg();
+  const uint8_t* image = currect_image();
   char d = 0;
   readSpi(REG_ACCEL_XOUT_H, (uint8_t*)&d, sizeof(d), CS);
   int line = ((int)d + 0x80) * IMG_WIDTH / 0x100;
@@ -67,7 +67,7 @@ void loop() {
 
 static void draw_pixels(const uint8_t* image, int line) {
   for (int i = 0; i < IMG_HEIGHT; i += 2) {
-    int idx = (line * IMG_HEIGHT + i) * 3;
+    int idx = line * IMG_HEIGHT + i * 3;
     uint8_t c0 = pgm_read_byte(image + idx);
     uint8_t c1 = pgm_read_byte(image + idx + 1);
     uint8_t c2 = pgm_read_byte(image + idx + 2);
@@ -82,7 +82,7 @@ static void draw_pixels(const uint8_t* image, int line) {
   }
 }
 
-static const uint8_t* update_nimg() {
+static const uint8_t* currect_image() {
   static int nimg = 0;
   static int btn0 = 1;
   int btn1 = digitalRead(BUTTON_PIN);
