@@ -14,8 +14,7 @@
 #endif
 #include "image.h"
 
-//チップセレクトピンに10を使用
-#define CS 10
+// MPU9250レジスタ定義
 #define REG_ACCEL_XOUT_H 0x3B
 #define REG_ACCEL_XOUT_L 0x3C
 #define REG_ACCEL_YOUT_H 0x3D
@@ -32,9 +31,15 @@
 #define REG_GYRO_ZOUT_L 0x48
 #define REG_WHO_AM_I 0x75
 
-#define PIN 6  // Arduinoで使うピン
+#define LED_PIN 6
+#define BUTTON_PIN 7
+#define CS 10
+// #define MOSI 11
+// #define MISO 12
+// #define CLK 13
 
-Adafruit_NeoPixel pixels(IMG_HEIGHT, PIN, NEO_GRB + NEO_KHZ800);
+Adafruit_NeoPixel pixels(IMG_HEIGHT, LED_PIN, NEO_GRB + NEO_KHZ800);
+int btn0 = 1;
 
 void setup() {
   Serial.begin(115200);
@@ -43,11 +48,16 @@ void setup() {
   SPI.setBitOrder(MSBFIRST);
   SPI.setDataMode(SPI_MODE0);
   pinMode(CS, OUTPUT);
+  pinMode(BUTTON_PIN, INPUT_PULLUP);
   pixels.begin();
   pixels.setBrightness(20);
 }
 
 void loop() {
+  int btn1 = digitalRead(BUTTON_PIN);
+  if (btn1 == 0 && btn0 == 1) { /*イメージ切替*/
+  }
+  btn0 = btn1;
   char d = 0;
   readSpi(REG_ACCEL_XOUT_H, (uint8_t*)&d, sizeof(d), CS);
   int line = ((int)d + 0x80) * IMG_WIDTH / 0x100;
@@ -63,7 +73,7 @@ void loop() {
   pixels.show();
 }
 
-void readSpi(uint8_t reg, uint8_t* buf, int len, int cs) {
+static void readSpi(uint8_t reg, uint8_t* buf, int len, int cs) {
   digitalWrite(cs, LOW);
   SPI.transfer(reg | 0x80);
   for (int i = 0; i < len; ++i) buf[i] = SPI.transfer(0x00);

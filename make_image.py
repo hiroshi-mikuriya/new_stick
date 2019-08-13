@@ -8,8 +8,12 @@ if img is None:
 
 img = cv2.resize(img, (48, 48))
 print("#include <avr/pgmspace.h>")
+print("#ifndef IMG_WIDTH")
 print("#define IMG_WIDTH", img.shape[1])
+print("#endif")
+print("#ifndef IMG_HEIGHT")
 print("#define IMG_HEIGHT", img.shape[0])
+print("#endif")
 print("const unsigned int image[IMG_WIDTH * IMG_HEIGHT] PROGMEM = {")
 for x in range(0, img.shape[1]):
   print('  /* %2d */' % x, end = ' ')
