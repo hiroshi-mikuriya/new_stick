@@ -48,9 +48,9 @@ void setup() {
 }
 
 void loop() {
-  int d;
-  readItems(REG_ACCEL_XOUT_H, &d, 1);
-  int line = (d / 0x100 + 0x80) * IMG_WIDTH / 0x100;
+  char d = 0;
+  readSpi(REG_ACCEL_XOUT_H, (uint8_t*)&d, sizeof(d), CS);
+  int line = ((int)d + 0x80) * IMG_WIDTH / 0x100;
   // Serial.println(line);
   if (line < 0 || IMG_HEIGHT <= line) return;
   for (int i = 0; i < IMG_HEIGHT; ++i) {
@@ -63,13 +63,9 @@ void loop() {
   pixels.show();
 }
 
-void readItems(uint8_t regAddr, int* d, int n) {
-  digitalWrite(CS, LOW);
-  SPI.transfer(regAddr | 0x80);
-  for (int i = 0; i < n; ++i) {
-    uint8_t d0 = SPI.transfer(0x00);
-    uint8_t d1 = SPI.transfer(0x00);
-    d[i] = (int)((d0 << 8) + (d1 & 0xFF));
-  }
-  digitalWrite(CS, HIGH);
+void readSpi(uint8_t reg, uint8_t* buf, int len, int cs) {
+  digitalWrite(cs, LOW);
+  SPI.transfer(reg | 0x80);
+  for (int i = 0; i < len; ++i) buf[i] = SPI.transfer(0x00);
+  digitalWrite(cs, HIGH);
 }
