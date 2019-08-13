@@ -67,7 +67,7 @@ void loop() {
 
 static void draw_pixels(const uint8_t* image, int line) {
   for (int i = 0; i < IMG_HEIGHT; i += 2) {
-    int idx = line * IMG_HEIGHT + i * 3;
+    int idx = (line * IMG_HEIGHT / 2 + i) * 3;
     uint8_t c0 = pgm_read_byte(image + idx);
     uint8_t c1 = pgm_read_byte(image + idx + 1);
     uint8_t c2 = pgm_read_byte(image + idx + 2);
