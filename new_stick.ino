@@ -31,6 +31,7 @@
 #define REG_GYRO_ZOUT_L 0x48
 #define REG_WHO_AM_I 0x75
 
+// ピンアサイン
 #define LED_PIN 6
 #define BUTTON_PIN 7
 #define CS 10
@@ -39,7 +40,6 @@
 // #define CLK 13
 
 Adafruit_NeoPixel pixels(IMG_HEIGHT, LED_PIN, NEO_GRB + NEO_KHZ800);
-int btn0 = 1;
 
 void setup() {
   Serial.begin(115200);
@@ -54,15 +54,18 @@ void setup() {
 }
 
 void loop() {
-  int btn1 = digitalRead(BUTTON_PIN);
-  if (btn1 == 0 && btn0 == 1) { /*イメージ切替*/
-  }
-  btn0 = btn1;
+  const uint8_t* image = update_nimg();
   char d = 0;
   readSpi(REG_ACCEL_XOUT_H, (uint8_t*)&d, sizeof(d), CS);
   int line = ((int)d + 0x80) * IMG_WIDTH / 0x100;
   // Serial.println(line);
-  if (line < 0 || IMG_HEIGHT <= line) return;
+  if (0 <= line && line < IMG_HEIGHT) {
+    draw_pixels(image, line);
+    pixels.show();
+  }
+}
+
+static void draw_pixels(const uint8_t* image, int line) {
   for (int i = 0; i < IMG_HEIGHT; i += 2) {
     int idx = (line * IMG_HEIGHT + i) * 3;
     uint8_t c0 = pgm_read_byte(image + idx);
@@ -77,7 +80,15 @@ void loop() {
     pixels.setPixelColor(i, r0, g0, b0);
     pixels.setPixelColor(i + 1, r1, g1, b1);
   }
-  pixels.show();
+}
+
+static const uint8_t* update_nimg() {
+  static int nimg = 0;
+  static int btn0 = 1;
+  int btn1 = digitalRead(BUTTON_PIN);
+  if (btn1 == 0 && btn0 == 1) nimg = (nimg + 1) % COUNT_OF_IMAGES;
+  btn0 = btn1;
+  return images[nimg];
 }
 
 static void readSpi(uint8_t reg, uint8_t* buf, int len, int cs) {
