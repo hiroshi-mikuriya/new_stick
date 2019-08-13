@@ -14,13 +14,15 @@ print("#endif")
 print("#ifndef IMG_HEIGHT")
 print("#define IMG_HEIGHT", img.shape[0])
 print("#endif")
-print("const unsigned int image[IMG_WIDTH * IMG_HEIGHT] PROGMEM = {")
+print("const uint8_t image[IMG_WIDTH * IMG_HEIGHT * 3 / 2] PROGMEM = {")
 for x in range(0, img.shape[1]):
     print('  /* %2d */' % x, end=' ')
-    for y in range(0, img.shape[0]):
-        c = img[y][x]
-        c0 = (c[2] & 0xF8) + ((c[1] & 0xE0) >> 5)
-        c1 = ((c[1] & 0x1C) << 3) + ((c[0] & 0xF8) >> 3)
-        print('0x%02X%02X, ' % (c0, c1), end=' ')
+    for y in range(0, img.shape[0], 2):
+        a0 = img[y][x]
+        a1 = img[y + 1][x]
+        c0 = (a0[2] & 0xF0) + ((a0[1] & 0xF0) >> 4)
+        c1 = (a0[0] & 0xF0) + ((a1[2] & 0xF0) >> 4)
+        c2 = (a1[1] & 0xF0) + ((a1[1] & 0xF0) >> 4)
+        print('0x%02X,0x%02X,0x%02X,' % (c0, c1, c2), end='  ')
     print()
 print("};")
