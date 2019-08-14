@@ -19,16 +19,16 @@ for i in range(1, len(sys.argv)):
     print('// %s' % sys.argv[i])
     print('const uint16_t image%d[IMG_WIDTH * IMG_HEIGHT] PROGMEM = {' % i)
     for x in range(img.shape[1]):
-        print('  /* %2d */' % x, end=' ')
         for y in range(img.shape[0]):
             a = img[y][x]
-            c = ((a[2] & 0xF1) << 8) + ((a[1] & 0xFC) << 3) + ((a[0] & 0xF8) >> 3)
-            print('0x%04X' % c, end=', ')
+            c = ((a[2] & 0xF1) << 8) + ((a[1] & 0xFC) << 3) + (
+                (a[0] & 0xF8) >> 3)
+            print('/* %2d-%d */ 0x%04X' % (x, y, c), end=', ')
         print()
     print('};')
 
 print('#define COUNT_OF_IMAGES %d' % (len(sys.argv) - 1))
-print('const uint8_t * images[COUNT_OF_IMAGES] = {', end = ' ')
+print('const uint16_t * images[COUNT_OF_IMAGES] = {', end=' ')
 for i in range(1, len(sys.argv)):
-    print('image%d' % i, end = ', ')
+    print('image%d' % i, end=', ')
 print('};')
