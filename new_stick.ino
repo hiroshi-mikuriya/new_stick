@@ -84,9 +84,9 @@ static void draw_pixels(const uint8_t* image, int line) {
 
 static const uint8_t* currect_image() {
   static int nimg = 0;
-  static int btn0 = 1;
+  static int btn0 = HIGH;
   int btn1 = digitalRead(BUTTON_PIN);
-  if (btn1 == 0 && btn0 == 1) nimg = (nimg + 1) % COUNT_OF_IMAGES;
+  if (btn1 == LOW && btn0 == HIGH) nimg = (nimg + 1) % COUNT_OF_IMAGES;
   btn0 = btn1;
   return images[nimg];
 }
