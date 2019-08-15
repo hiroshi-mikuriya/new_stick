@@ -22,8 +22,8 @@ for i in range(1, len(sys.argv)):
     for x in range(img.shape[1]):
         for y in range(img.shape[0]):
             a = img[y][x]
-            c = ((a[2] & 0xF8) << 8) + ((a[1] & 0xFC) << 3) + (
-                (a[0] & 0xF8) >> 3)
+            c = ((a[2] & 0b11111000) << 8) + ((a[1] & 0b11111100) << 3) + (
+                (a[0] & 0b11111000) >> 3)
             print('/* %2d-%d */ 0x%04X' % (x, y, c), end=', ')
         print()
     print('};')
