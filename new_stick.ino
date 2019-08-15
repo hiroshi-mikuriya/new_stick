@@ -54,7 +54,7 @@ void setup() {
 }
 
 void loop() {
-  const uint16_t* image = currect_image();
+  const image_t* image = currect_image();
   char d = 0;
   readSpi(REG_ACCEL_XOUT_H, (uint8_t*)&d, sizeof(d), CS);
   int line = ((int)d + 0x80) * IMG_WIDTH / 0x100;
@@ -65,9 +65,9 @@ void loop() {
   }
 }
 
-static void draw_pixels(const uint16_t* image, int line) {
+static void draw_pixels(const image_t* image, int line) {
   for (int i = 0; i < IMG_HEIGHT; ++i) {
-    uint16_t c = pgm_read_word(image + line * IMG_HEIGHT + i);
+    image_t c = pgm_read_word(image + line * IMG_HEIGHT + i);
     uint8_t r = (c & 0xF800) >> 8;
     uint8_t g = (c & 0x07E0) >> 3;
     uint8_t b = (c & 0x001F) << 3;
@@ -75,7 +75,7 @@ static void draw_pixels(const uint16_t* image, int line) {
   }
 }
 
-static const uint16_t* currect_image() {
+static const image_t* currect_image() {
   static int nimg = 0;
   static int btn0 = HIGH;
   int btn1 = digitalRead(BUTTON_PIN);
