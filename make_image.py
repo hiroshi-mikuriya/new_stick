@@ -32,6 +32,6 @@ for i in range(1, len(sys.argv)):
     print(',\n'.join(rows))
     print('};')
 
-print('#define COUNT_OF_IMAGES %d' % (len(sys.argv) - 1))
+print('#define COUNT_OF_IMAGES', len(sys.argv) - 1)
 print('const image_t* images[COUNT_OF_IMAGES] = {',
       ', '.join(map(lambda i: 'image%d' % i, range(1, len(sys.argv)))), '};')
