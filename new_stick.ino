@@ -66,10 +66,10 @@ void loop() {
 
 static void draw_pixels(const image_t* image, int line) {
   for (int i = 0; i < IMG_HEIGHT; ++i) {
-    image_t c = pgm_read_word(image + line * IMG_HEIGHT + i);
-    uint8_t r = (c & 0xF800) >> 8;
-    uint8_t g = (c & 0x07E0) >> 3;
-    uint8_t b = (c & 0x001F) << 3;
+    image_t c = pgm_read_byte(image + line * IMG_HEIGHT + i);
+    uint8_t r = c & 0xC0;
+    uint8_t g = (c & 0x38) << 2;
+    uint8_t b = (c & 0x07) << 5;
     pixels.setPixelColor(i, r, g, b);
   }
 }

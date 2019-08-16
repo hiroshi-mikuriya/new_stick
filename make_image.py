@@ -3,7 +3,7 @@ import sys
 
 width = 48
 height = 48
-image_t = 'uint16_t'
+image_t = 'uint8_t'
 print('#include <avr/pgmspace.h>')
 print('#ifndef IMG_WIDTH')
 print('#define IMG_WIDTH', width)
@@ -25,9 +25,9 @@ for i in range(1, len(sys.argv)):
         cols = []
         for y in range(img.shape[0]):
             a = img[y][x]
-            c = ((a[2] & 0b11111000) << 8) + ((a[1] & 0b11111100) << 3) + (
-                (a[0] & 0b11111000) >> 3)
-            cols.append('/* %2d-%d */ 0x%04X' % (x, y, c))
+            c = (a[2] & 0b11000000) + ((a[1] & 0b11100000) >> 2) + (
+                (a[0] & 0b11100000) >> 5)
+            cols.append('/* %2d-%d */ 0x%02X' % (x, y, c))
         rows.append('  ' + ', '.join(cols))
     print(',\n'.join(rows))
     print('};')
