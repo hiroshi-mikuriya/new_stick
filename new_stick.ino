@@ -33,7 +33,7 @@
 
 // ピンアサイン
 #define LED_PIN 6
-#define BUTTON_PIN 7
+// #define BUTTON_PIN 7
 #define CS 10
 // #define MOSI 11
 // #define MISO 12
@@ -48,16 +48,15 @@ void setup() {
   SPI.setBitOrder(MSBFIRST);
   SPI.setDataMode(SPI_MODE0);
   pinMode(CS, OUTPUT);
-  pinMode(BUTTON_PIN, INPUT_PULLUP);
   pixels.begin();
   pixels.setBrightness(20);
 }
 
 void loop() {
+  char d[1] = {0};
+  readSpi(REG_ACCEL_XOUT_H, (uint8_t*)d, sizeof(d), CS);
   const image_t* image = currect_image();
-  char d = 0;
-  readSpi(REG_ACCEL_XOUT_H, (uint8_t*)&d, sizeof(d), CS);
-  int line = ((int)d + 0x80) * IMG_WIDTH / 0x100;
+  int line = ((int)d[0] + 0x80) * IMG_WIDTH / 0x100;
   // Serial.println(line);
   if (0 <= line && line < IMG_HEIGHT) {
     draw_pixels(image, line);
@@ -77,10 +76,11 @@ static void draw_pixels(const image_t* image, int line) {
 
 static const image_t* currect_image() {
   static int nimg = 0;
-  static int btn0 = HIGH;
-  int btn1 = digitalRead(BUTTON_PIN);
-  if (btn1 == LOW && btn0 == HIGH) nimg = (nimg + 1) % COUNT_OF_IMAGES;
-  btn0 = btn1;
+  static unsigned long time = millis();
+  if (3000 < millis() - time) {
+    nimg = (nimg + 1) % COUNT_OF_IMAGES;
+    time = millis();
+  }
   return images[nimg];
 }
 
