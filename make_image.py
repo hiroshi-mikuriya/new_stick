@@ -29,7 +29,5 @@ for i in range(1, len(sys.argv)):
     print('};')
 
 print('#define COUNT_OF_IMAGES %d' % (len(sys.argv) - 1))
-print('const image_t* images[COUNT_OF_IMAGES] = {', end=' ')
-for i in range(1, len(sys.argv)):
-    print('image%d' % i, end=', ')
-print('};')
+print('const image_t* images[COUNT_OF_IMAGES] = {', ', '.join(sys.argv[1:]),
+      '};')
