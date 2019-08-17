@@ -31,13 +31,16 @@
 #define REG_GYRO_ZOUT_L 0x48
 #define REG_WHO_AM_I 0x75
 
-// ピンアサイン
+// デジタルピンアサイン
 #define LED_PIN 6
-// #define BUTTON_PIN 7
 #define CS 10
 // #define MOSI 11
 // #define MISO 12
 // #define CLK 13
+
+// アナログピンアサイン
+#define PHOTO_PIN 0 // 665 - 723
+#define REGISTER_PIN 1 // 0 - 724
 
 Adafruit_NeoPixel pixels(IMG_HEIGHT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
@@ -49,15 +52,14 @@ void setup() {
   SPI.setDataMode(SPI_MODE0);
   pinMode(CS, OUTPUT);
   pixels.begin();
-  pixels.setBrightness(20);
 }
 
 void loop() {
+  pixels.setBrightness(analogRead(REGISTER_PIN) / 10);
   char d[1] = {0};
   readSpi(REG_ACCEL_XOUT_H, (uint8_t*)d, sizeof(d), CS);
   const image_t* image = currect_image();
   int line = ((int)d[0] + 0x80) * IMG_WIDTH / 0x100;
-  // Serial.println(line);
   if (0 <= line && line < IMG_HEIGHT) {
     draw_pixels(image, line);
     pixels.show();
