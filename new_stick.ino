@@ -39,8 +39,8 @@
 // #define CLK 13
 
 // アナログピンアサイン
-#define PHOTO_PIN 0 // 665 - 723
-#define REGISTER_PIN 1 // 0 - 724
+#define PHOTO_PIN 0     // 665 - 723
+#define REGISTER_PIN 1  // 0 - 724
 
 Adafruit_NeoPixel pixels(IMG_HEIGHT, LED_PIN, NEO_GRB + NEO_KHZ800);
 
@@ -77,11 +77,15 @@ static void draw_pixels(const image_t* image, int line) {
 }
 
 static const image_t* currect_image() {
+#define UPPER_TH 680
+#define LOWER_TH 660
   static int nimg = 0;
-  static unsigned long time = millis();
-  if (3000 < millis() - time) {
-    nimg = (nimg + 1) % COUNT_OF_IMAGES;
-    time = millis();
+  static int prev = UPPER_TH;
+  int now = analogRead(PHOTO_PIN);
+  if (now <= LOWER_TH || UPPER_TH <= now) {
+    if (UPPER_TH <= prev && now <= LOWER_TH)
+      nimg = (nimg + 1) % COUNT_OF_IMAGES;
+    prev = now;
   }
   return images[nimg];
 }
