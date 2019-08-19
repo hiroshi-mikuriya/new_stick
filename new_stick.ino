@@ -77,15 +77,11 @@ static void draw_pixels(const image_t* image, int line) {
 }
 
 static const image_t* currect_image() {
-#define UPPER_TH 680
-#define LOWER_TH 660
   static int nimg = 0;
-  static int prev = UPPER_TH;
-  int now = analogRead(PHOTO_PIN);
-  if (now <= LOWER_TH || UPPER_TH <= now) {
-    if (UPPER_TH <= prev && now <= LOWER_TH)
-      nimg = (nimg + 1) % COUNT_OF_IMAGES;
-    prev = now;
+  static unsigned long time = millis();
+  if (3000 < millis() - time) {
+    nimg = (nimg + 1) % COUNT_OF_IMAGES;
+    time = millis();
   }
   return images[nimg];
 }
