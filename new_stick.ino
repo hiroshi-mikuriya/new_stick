@@ -55,7 +55,7 @@ void setup() {
 }
 
 void loop() {
-  pixels.setBrightness(analogRead(REGISTER_PIN) / 10);
+  pixels.setBrightness(analogRead(REGISTER_PIN) / 4);
   char d[1] = {0};
   readSpi(REG_ACCEL_XOUT_H, (uint8_t*)d, sizeof(d), CS);
   const image_t* image = currect_image();
